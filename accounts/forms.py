@@ -4,10 +4,24 @@ from django.forms.widgets import DateInput
 from .models import CustomUser, Subject, SubjectLevel
 
 class CustomUserCreationForm(UserCreationForm):
+    # Explicitly declare password fields to force them to appear
+    password_1 = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        strip=False,
+        help_text="<ul><li>Your password must contain at least 8 characters.</li><li>Your password can't be a commonly used password.</li><li>Your password can't be entirely numeric.</li></ul>",
+    )
+    password_2 = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        strip=False,
+    )
+
     date_of_birth = forms.DateField(
-        widget=DateInput(attrs={'type': 'date'}),
+        widget=DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         required=False 
     )
+    
     terms_agreed = forms.BooleanField(
         required=True,
         error_messages={'required': 'You must agree to the terms to sign up.'},
@@ -16,14 +30,19 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('first_name', 'last_name', 'email', 'date_of_birth') 
-
+        # We only list model fields here. Password fields are handled by the class attributes above.
+        fields = ('first_name', 'last_name', 'email', 'date_of_birth')
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
 
 class CustomUserChangeForm(UserChangeForm):
     password = None 
     
     date_of_birth = forms.DateField(
-        widget=DateInput(attrs={'type': 'date'}),
+        widget=DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         required=False
     )
     subjects = forms.ModelMultipleChoiceField(
@@ -40,7 +59,7 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = (
-            'profile_picture', # Added profile picture field
+            'profile_picture',
             'first_name', 'last_name', 'email', 'date_of_birth', 
             'cost', 'subjects', 'subject_levels',
             'qts_certificate', 'dbs_certificate',
@@ -54,23 +73,31 @@ class CustomUserChangeForm(UserChangeForm):
         )
         widgets = {
             'profile_picture': forms.FileInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'cost': forms.NumberInput(attrs={'class': 'form-control'}),
+            'qts_certificate': forms.FileInput(attrs={'class': 'form-control'}),
+            'dbs_certificate': forms.FileInput(attrs={'class': 'form-control'}),
+            'referee1_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'referee1_email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'referee2_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'referee2_email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
         # Explicitly make fields optional
         self.fields['profile_picture'].required = False
-        
         self.fields['first_name'].required = False
         self.fields['last_name'].required = False
         self.fields['date_of_birth'].required = False
         self.fields['cost'].required = False
         self.fields['subjects'].required = False
         self.fields['subject_levels'].required = False
-        
         self.fields['qts_certificate'].required = False
         self.fields['dbs_certificate'].required = False
-        
         self.fields['referee1_name'].required = False
         self.fields['referee1_email'].required = False
         self.fields['referee2_name'].required = False
