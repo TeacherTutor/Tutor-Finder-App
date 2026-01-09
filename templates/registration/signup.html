@@ -57,21 +57,25 @@
                                     </div>
                                 {% endif %}
                             </div>
+                            
+                            <!-- Password 1 (Main Password) -->
                              <div class="col-md-6 mb-3">
                                 <label for="{{ form.password_1.id_for_label }}" class="form-label">Password</label>
-                                {{ form.password }}
-                                {% if form.password.errors %}
+                                {{ form.password_1 }}
+                                {% if form.password_1.errors %}
                                     <div class="invalid-feedback d-block">
-                                        {{ form.password.errors|striptags }}
+                                        {{ form.password_1.errors|striptags }}
                                     </div>
                                 {% endif %}
                             </div>
+                            
+                            <!-- Password 2 (Confirmation) -->
                             <div class="col-md-6 mb-3">
                                 <label for="{{ form.password_2.id_for_label }}" class="form-label">Confirm Password</label>
-                                {{ form.password2 }}
-                                 {% if form.password2.errors %}
+                                {{ form.password_2 }}
+                                 {% if form.password_2.errors %}
                                     <div class="invalid-feedback d-block">
-                                        {{ form.password2.errors|striptags }}
+                                        {{ form.password_2.errors|striptags }}
                                     </div>
                                 {% endif %}
                             </div>
